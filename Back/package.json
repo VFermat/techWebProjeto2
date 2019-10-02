@@ -1,0 +1,13 @@
+{
+  "name": "TechWeb",
+  "version": "1.0.0",
+  "description": "Projeto 2 da Disciplina de Tecnologias Web",
+  "main": "index.js",
+  "repository": "https://github.com/VFermat/techWebProjeto2.git",
+  "author": "Vitor Eller e Henry Rocha",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.3.2"
+  }
+}
