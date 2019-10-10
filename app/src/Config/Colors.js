@@ -1,5 +1,8 @@
 export const Colors = {
-  background: 'rgba(225, 241, 244, 0.8)',
+  header: '#323846',
+  background: '#C3F7EB',
+  sideBar: '#FBF9F3',
+  extra: '#88D9F3',
   black: '#000',
   white: '#fff',
   teal: '#03CCD3',
