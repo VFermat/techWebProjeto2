@@ -168,7 +168,7 @@ class LoginScreen extends Component {
                   marginRight: 'auto',
                   position: 'relative',
                 }}>
-                  <Button block>Criar Conta</Button>
+                  <Button block onClick={() => {this.props.history.push('/user')}}>Criar Conta</Button>
                 </div>
               </div>
             </div>
