@@ -38,7 +38,8 @@
         "error",
         2
       ],
-      "require-jsdoc": "off"
+      "require-jsdoc": "off",
+      "max-len": "off"
     }
   },
   "browserslist": {
