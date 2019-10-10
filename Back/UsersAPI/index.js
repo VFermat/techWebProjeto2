@@ -11,6 +11,16 @@ const CONFIGS = {
 };
 
 app.use(parser.json());
+app.use(function(req, res, next) {
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+  next();
+});
 const client = new MongoClient(CONFIGS.dbUrl,
     {useNewUrlParser: true, useUnifiedTopology: true});
 
@@ -115,6 +125,7 @@ client.connect((err) => {
   // LOGIN route
   app.route('/login')
       .post(async (req, res, next) => {
+        console.log("Bateu");
         const data = req.body;
         let user;
         await db.collection('users').findOne({email: data.email})
