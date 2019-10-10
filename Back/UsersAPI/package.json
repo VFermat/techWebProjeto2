@@ -1,0 +1,26 @@
+{
+  "name": "UsersAPI",
+  "version": "1.0.0",
+  "description": "Microserviço que cuidará das informações do usuário no projeto 2 de Tecnologias Web",
+  "main": "index.js",
+  "repository": "https://github.com/VFermat/techWebProjeto2",
+  "author": "Vitor Eller e Henry Rocha",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "body-parser": "^1.19.0",
+    "crypto": "^1.0.1",
+    "express": "^4.17.1",
+    "jsonschema": "^1.2.4",
+    "mongodb": "^3.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^6.5.1",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-react-hooks": "^1.7.0"
+  }
+}
