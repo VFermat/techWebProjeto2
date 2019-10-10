@@ -32,7 +32,7 @@ class Header extends Component {
           display: 'flex',
           justifyContent: 'space-between',
         }}>
-          <div>
+          <div onClick={() => window.location.href='/'}>
             <p style={pStyling}>MovieMe</p>
           </div>
           <div>
