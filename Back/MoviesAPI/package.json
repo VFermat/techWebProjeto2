@@ -2,7 +2,7 @@
   "name": "MoviesAPI",
   "version": "1.0.0",
   "description": "Movies API for the second project of Web Technologies class",
-  "main": "index.js",
+  "main": "./movies.js",
   "author": "Vitor Eller e Henry Rocha",
   "license": "MIT",
   "dependencies": {
