@@ -6,12 +6,12 @@ class SideBar extends Component {
   constructor(props) {
     super(props);
     this.state = this.props.history.location.state;
-    console.log(this.props.history);
   }
 
   render() {
     return (
       <div style={{
+        height: 'auto',
         width: '15%',
         background: Colors.sideBar,
       }}>

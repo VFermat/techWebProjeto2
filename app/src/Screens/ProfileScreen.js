@@ -13,7 +13,7 @@ export class ProfileScreen extends Component {
   }
 
   handleLogout() {
-    localStorage.removeItem('user');
+    localStorage.clear();
     this.props.history.push('/');
   }
 
@@ -104,7 +104,15 @@ export class ProfileScreen extends Component {
                   </ListGroup.Item>
                 </ListGroup>
                 <Button onClick={this.handleLogout} style={{
-                  marginTop: '40px'}}>Logout</Button>
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-around',
+                  marginTop: '40px',
+                  width: '30%',
+                  height: 'auto',
+                  marginRight: 'auto',
+                  marginLeft: 'auto',
+                }}>Logout</Button>
               </div>
             </div>
           </div>

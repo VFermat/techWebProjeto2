@@ -12,7 +12,8 @@
     "react-navigation": "^4.0.10",
     "react-navigation-stack": "^1.9.4",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.2.0"
+    "react-scripts": "3.2.0",
+    "react-star-ratings": "^2.3.0"
   },
   "devDependencies": {
     "eslint": "^6.5.1",
