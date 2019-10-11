@@ -64,7 +64,7 @@ client.connect((err) => {
 
   app.route('/movies')
       .post(async (req, res, next) => {
-        const category = req.body.category;
+        const category = 'movies';
         const type = req.body.type;
 
         let movies;
@@ -85,7 +85,7 @@ client.connect((err) => {
           };
           await db.collection(category).insertOne(payload).then((v) => {
             res.send({
-              movies: movies,
+              [category]: movies,
             });
           }).catch((e) => {
             res.status(400).send({
@@ -99,9 +99,7 @@ client.connect((err) => {
         }
       })
       .get(async (req, res, next) => {
-        console.log("bateu");
-        const category = req.query.category.substring(0,
-            req.query.category.length - 1);
+        const category = 'movie';
         const type = req.query.type;
         let dbMovies;
         await db.collection(category).find({type: type}).toArray().then((v) => {
@@ -116,9 +114,9 @@ client.connect((err) => {
         });
       });
 
-  app.route('/movies/:movieId')
+  app.route('/movie/:movieId')
       .post(async (req, res, next) => {
-        const category = req.body.category;
+        const category = 'movies';
         const type = req.body.type;
         let movie;
 
@@ -152,6 +150,29 @@ client.connect((err) => {
             message: 'Deu Ruim Ze',
           });
         };
+      })
+      .get(async (req, res, next) => {
+        console.log('oi');
+        const category = 'movie';
+        const movieId = req.params.movieId;
+
+        await db.collection(category).findOne({imdbId: movieId}).then((v) => {
+          console.log(v);
+          if (v) {
+            const movie = v;
+            movie.id = movie._id;
+            delete movie._id;
+            res.send(movie);
+          } else {
+            res.status(400).send({
+              message: 'No movie with refered id',
+            });
+          }
+        }).catch((e) => {
+          res.status(400).send({
+            message: e.message,
+          });
+        });
       });
 });
 

@@ -18,14 +18,20 @@ class HomeScreen extends Component {
   }
 
   async componentDidMount() {
-    let movies = localStorage.getItem('movies');
+    const movies = localStorage.getItem('movies');
     if (!movies) {
       await axios.get('http://localhost:8081/movies?category=movies&type=wanted').then((v) => {
-        localStorage.setItem('movies', JSON.stringify(v.data));
-        this.setState({
-          loading: false,
-          movies: v.data,
-        });
+        if (v) {
+          localStorage.setItem('movies', JSON.stringify(v.data));
+          this.setState({
+            loading: false,
+            movies: v.data,
+          });
+        } else {
+          this.setState({
+            loading: true,
+          });
+        }
       }).catch((e) => {
         console.log(e);
       });
@@ -49,6 +55,9 @@ class HomeScreen extends Component {
             margin: '10px 10px 0px 10px',
           }}>
             <Figure.Image
+              onClick={() => {
+                this.props.history.push('/movie/'+item.imdbId);
+              }}
               src={item.image}
               alt={item.title}
             />
