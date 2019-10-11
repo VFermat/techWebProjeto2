@@ -36,15 +36,23 @@ class LoginScreen extends Component {
       email: this.state.email,
       password: this.state.password,
     }).then((v) => {
+      const user = v.data;
       this.setState({
         loading: false,
       });
-      alert('FOI PORRA!');
+      console.log(user);
+      localStorage.setItem('user', JSON.stringify(user));
+      this.props.history.push('/home');
     }).catch((e) => {
       alert('Deu Ruim Ze!');
       this.setState({
         loading: false,
       });
+      // this.props.history.push('/home', {user: {
+      //   name: 'vitor',
+      //   email: 'a@a.com',
+      //   password: '123456',
+      // }});
     });
     event.preventDefault();
   }
@@ -168,7 +176,9 @@ class LoginScreen extends Component {
                   marginRight: 'auto',
                   position: 'relative',
                 }}>
-                  <Button block onClick={() => {this.props.history.push('/user')}}>Criar Conta</Button>
+                  <Button block onClick={() => {
+                    this.props.history.push('/user');
+                  }}>Criar Conta</Button>
                 </div>
               </div>
             </div>

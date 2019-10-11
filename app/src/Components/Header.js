@@ -21,25 +21,27 @@ class Header extends Component {
       userText = <p></p>;
     }
     return (
-      <nav style={{
+      <div style={{
         display: 'block',
         minHeight: '56px',
         height: 'auto',
-        background: Colors.purpleMedium,
+        width: '100%',
+        background: Colors.header,
         color: Colors.white,
+        boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12)',
       }}>
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
         }}>
-          <div onClick={() => window.location.href='/'}>
+          <div onClick={() => this.props.history.push('/home')}>
             <p style={pStyling}>MovieMe</p>
           </div>
           <div>
             {userText}
           </div>
         </div>
-      </nav>
+      </div>
     );
   }
 }

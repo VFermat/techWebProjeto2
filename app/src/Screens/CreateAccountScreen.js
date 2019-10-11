@@ -76,7 +76,10 @@ class CreateAccountScreen extends Component {
       button = <Button block disabled={!this.checkForm()} onClick={this.handleSubmit}>Criar Conta</Button>;
     }
     return (
-      <div>
+      <div style={{
+        background: Colors.background,
+        minHeight: '100%',
+      }}>
         <Header />
         <div className="section-wrap" style={{
           padding: '30px 0px 100px 0px',
