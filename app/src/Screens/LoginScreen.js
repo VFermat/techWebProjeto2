@@ -13,6 +13,8 @@ class LoginScreen extends Component {
       loading: false,
     };
 
+    localStorage.clear();
+
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.checkForm = this.checkForm.bind(this);

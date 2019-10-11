@@ -2,7 +2,7 @@
   "name": "UsersAPI",
   "version": "1.0.0",
   "description": "Microserviço que cuidará das informações do usuário no projeto 2 de Tecnologias Web",
-  "main": "index.js",
+  "main": "./users.js",
   "repository": "https://github.com/VFermat/techWebProjeto2",
   "author": "Vitor Eller e Henry Rocha",
   "license": "MIT",
