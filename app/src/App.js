@@ -1,7 +1,6 @@
 import React from 'react';
 import {Switch, Route, Router} from 'react-router-dom';
 import {createBrowserHistory} from 'history';
-// import logo from './logo.svg';
 import LoginScreen from './Screens/LoginScreen';
 import CreateAccountScreen from './Screens/CreateAccountScreen';
 import HomeScreen from './Screens/HomeScreen';

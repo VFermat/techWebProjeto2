@@ -27,22 +27,22 @@ class SideBar extends Component {
             this.props.history.push('/home');
           }} style={{
             background: Colors.sideBar,
-          }} eventKey='home'>Home</ListGroup.Item>
+          }}>Home</ListGroup.Item>
           <ListGroup.Item action onClick={() => {
             this.props.history.push('/home');
           }} style={{
             background: Colors.sideBar,
-          }} eventKey='movies'>Meus Filmes</ListGroup.Item>
+          }}>Meus Filmes</ListGroup.Item>
           <ListGroup.Item action onClick={() => {
             this.props.history.push('/home');
           }} style={{
             background: Colors.sideBar,
-          }} eventKey='search'>Buscar Filmes</ListGroup.Item>
+          }}>Buscar Filmes</ListGroup.Item>
           <ListGroup.Item action onClick={() => {
             this.props.history.push('/profile');
           }} style={{
             background: Colors.sideBar,
-          }} eventKey='profile'>Minha Conta</ListGroup.Item>
+          }}>Minha Conta</ListGroup.Item>
         </ListGroup>
       </div>
     );
