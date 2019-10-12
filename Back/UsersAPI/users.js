@@ -6,7 +6,8 @@ const mongo = require('mongodb');
 
 const {MongoClient} = mongo;
 const CONFIGS = {
-  dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
+  // dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
+  dbUrl: 'mongodb://127.0.0.1:27017',
   dbName: 'techweb',
 };
 
@@ -63,6 +64,7 @@ client.connect((err) => {
           salt,
           password: hash,
           valid: false,
+          movies: [],
         };
 
         await db.collection('users').insertOne(user)
