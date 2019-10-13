@@ -18,7 +18,7 @@ app.use(function(req, res, next) {
   // Request methods you wish to allow
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, authorization');
 
   next();
 });
@@ -35,9 +35,10 @@ client.connect((err) => {
   /**
    * Function responsible for user authentication.
    * @param {String} authorization
+   * @param {String} userId (option)
    * @return {null | Object} Function returns either the user id or null.
    */
-  async function authenticateUser(authorization) {
+  async function authenticateUser(authorization, userId=null) {
     let response;
     await db.collection('tokens').findOne({token: authorization})
         .then((v) => {
@@ -46,7 +47,11 @@ client.connect((err) => {
         .catch((err) => {
           response = null;
         });
-    return response;
+    if (userId) {
+      return response == userId;
+    } else {
+      return response;
+    }
   }
 
   // USER Routes
@@ -77,46 +82,56 @@ client.connect((err) => {
                 message: err.message,
               });
             });
+      });
+
+  app.route('/user/:userId')
+      .get(async (req, res, next) => {
+        const userId = req.params.userId;
+        const auth = req.headers.authorization;
+        const authenticated = await authenticateUser(auth, userId);
+
+        if (authenticated) {
+          let user;
+          await db.collection('users').findOne({
+            _id: new mongo.ObjectID(userId),
+          }).then((v) => {
+            user = v;
+          }).catch((e) => {
+            user = null;
+          });
+
+          if (user) {
+            user.id = user._id;
+            delete user._id;
+            res.send(user);
+          } else {
+            res.status(400).send({
+              message: 'User not found',
+            });
+          }
+        } else {
+          res.status(405).send({
+            message: 'Unauthorized access',
+          });
+        }
       })
       .patch(async (req, res, next) => {
-        const data = req.body;
-        let userId;
-        await authenticateUser(req.headers.authorization).then((v) => {
-          userId = v;
-        });
-        let user = null;
+        const userId = req.params.userId;
+        const auth = req.headers.authorization;
+        const authenticated = await authenticateUser(auth, userId);
 
-        if (userId) {
-          db.collection('users').findOne(
-              {_id: new mongo.ObjectID(userId)},
-              (err, result) => {
-                if (err) {
-                  res.status(400).send({
-                    message: 'Deu Ruim Ze',
-                  });
-                } else {
-                  user = result;
-                  Object.keys(data).forEach((key) => {
-                    if (key != 'password' && key != 'email') {
-                      user[key] = data[key];
-                    }
-                  });
-                  db.collection('users').updateOne(
-                      {_id: new mongo.ObjectID(userId)},
-                      {$set: user},
-                      (err, result) => {
-                        if (err) {
-                          res.status(400).send({
-                            message: 'Deu Ruim Ze',
-                          });
-                        } else {
-                          res.send(user);
-                        }
-                      },
-                  );
-                }
-              },
-          );
+        if (authenticated) {
+          await db.collection('users').updateOne({
+            _id: new mongo.ObjectID(userId),
+          }, {
+            $set: req.body,
+          }).then((v) => {
+            res.send(v);
+          }).catch((e) => {
+            res.status(400).send({
+              message: e.message,
+            });
+          });
         } else {
           res.status(405).send({
             message: 'Unauthorized access',
@@ -127,7 +142,6 @@ client.connect((err) => {
   // LOGIN route
   app.route('/login')
       .post(async (req, res, next) => {
-        console.log("Bateu");
         const data = req.body;
         let user;
         await db.collection('users').findOne({email: data.email})

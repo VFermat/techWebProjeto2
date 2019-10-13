@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Figure} from 'react-bootstrap';
 import {IoIosHeart, IoIosHeartEmpty} from 'react-icons/io';
 import StarRating from 'react-star-ratings';
+import axios from 'axios';
 import {Colors} from '../Config/Colors';
 
 const validInfo = ['rating', 'summary', 'content', 'genres', 'director', 'duration', 'year'];
@@ -31,20 +32,34 @@ export class MovieDisplay extends Component {
     this.setState({
       user: user,
     });
+    this.props.movie.users.push(user.id);
   }
 
   handleMovieUnlike() {
     const user = this.state.user;
     const newMovies = [];
+    const users = [];
     user.movies.map((item) => (item !== this.props.movie.imdbId) ? newMovies.push(item) : '');
+    user.movies.map((item) => (item !== user.id) ? users.push(item) : '');
     user.movies = newMovies;
     this.setState({
       user: user,
     });
+    this.props.movie.users = users;
   }
 
   componentWillUnmount() {
     localStorage.setItem('user', JSON.stringify(this.state.user));
+    axios.patch('http://localhost:8080/user/'+this.state.user.id, {
+      movies: this.state.user.movies,
+    }, {
+      headers: {
+        authorization: this.state.user.token,
+      },
+    });
+    axios.patch('http://localhost:8081/movie/'+this.props.movie.imdbId, {
+      users: this.state.user.id,
+    });
   }
 
   render() {
