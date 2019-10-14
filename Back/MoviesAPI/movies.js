@@ -6,7 +6,8 @@ const mongo = require('mongodb');
 
 const {MongoClient} = mongo;
 const CONFIGS = {
-  dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
+  // dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
+  dbUrl: 'mongodb://127.0.0.1:27017',
   dbName: 'movies',
   dbAuthName: 'TechWeb',
 };
@@ -75,7 +76,6 @@ client.connect((err) => {
         }).then((v)=>{
           movies = v.data.result;
         }).catch((e)=>{
-          console.log(e);
           movies = null;
         });
         if (movies) {
@@ -130,7 +130,6 @@ client.connect((err) => {
         }).then((v) => {
           movie = v.data.result;
         }).catch((e) => {
-          console.log(e);
           movie = null;
         });
         if (movie) {
@@ -152,12 +151,10 @@ client.connect((err) => {
         };
       })
       .get(async (req, res, next) => {
-        console.log('oi');
         const category = 'movie';
         const movieId = req.params.movieId;
 
         await db.collection(category).findOne({imdbId: movieId}).then((v) => {
-          console.log(v);
           if (v) {
             const movie = v;
             movie.id = movie._id;
@@ -168,6 +165,20 @@ client.connect((err) => {
               message: 'No movie with refered id',
             });
           }
+        }).catch((e) => {
+          res.status(400).send({
+            message: e.message,
+          });
+        });
+      })
+      .patch(async (req, res, next) => {
+        const category = 'movie';
+        const movieId = req.params.movie.movieId;
+
+        await db.collection(category).updateOne({imdbId: movieId}, {
+          $set: req.data,
+        }).then((v) => {
+          res.send(v);
         }).catch((e) => {
           res.status(400).send({
             message: e.message,

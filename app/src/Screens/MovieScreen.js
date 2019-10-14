@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
+import {Spinner} from 'react-bootstrap';
+import axios from 'axios';
 import Header from '../Components/Header';
 import SideBar from '../Components/SideBar';
 import {Colors} from '../Config/Colors';
+import MovieDisplay from '../Components/MovieDisplay';
 
 export class MovieScreen extends Component {
   constructor(props) {
@@ -13,7 +16,34 @@ export class MovieScreen extends Component {
     };
   }
 
+  async componentDidMount() {
+    if (!this.state.movie) {
+      await axios.get('http://localhost:8081/movie/' + this.state.movieId).then((v) => {
+        if (v) {
+          this.setState({
+            loading: false,
+            movie: v.data,
+          });
+        } else {
+          this.setState({
+            loading: true,
+          });
+        };
+      }).catch((e) => {
+        this.setState({
+          loading: true,
+        });
+      });
+    }
+  }
+
   render() {
+    let display;
+    if (this.state.loading) {
+      display = <Spinner animation="border" role="status"/>;
+    } else {
+      display = <MovieDisplay movie={this.state.movie} />;
+    }
     return (
       <div>
         <Header />
@@ -25,6 +55,17 @@ export class MovieScreen extends Component {
           background: Colors.background,
         }}>
           <SideBar history={this.props.history} />
+          <div style={{
+            width: '75%',
+            height: '100%',
+            marginTop: '2rem',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+            display: 'block',
+            color: Colors.greyText,
+          }}>
+            {display}
+          </div>
         </div>
       </div>
     );
