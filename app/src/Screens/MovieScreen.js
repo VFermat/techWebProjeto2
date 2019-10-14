@@ -14,6 +14,7 @@ export class MovieScreen extends Component {
       loading: true,
       movie: null,
     };
+    this.user = JSON.parse(localStorage.getItem('user'));
   }
 
   async componentDidMount() {
@@ -38,37 +39,41 @@ export class MovieScreen extends Component {
   }
 
   render() {
-    let display;
-    if (this.state.loading) {
-      display = <Spinner animation="border" role="status"/>;
-    } else {
-      display = <MovieDisplay movie={this.state.movie} />;
-    }
-    return (
-      <div>
-        <Header />
-        <div style={{
-          width: '100%',
-          heigth: 'auto',
-          minHeight: '700px',
-          display: 'flex',
-          background: Colors.background,
-        }}>
-          <SideBar history={this.props.history} />
+    if (this.user) {
+      let display;
+      if (this.state.loading) {
+        display = <Spinner animation="border" role="status"/>;
+      } else {
+        display = <MovieDisplay movie={this.state.movie} />;
+      }
+      return (
+        <div>
+          <Header />
           <div style={{
-            width: '75%',
-            height: '100%',
-            marginTop: '2rem',
-            marginRight: 'auto',
-            marginLeft: 'auto',
-            display: 'block',
-            color: Colors.greyText,
+            width: '100%',
+            heigth: 'auto',
+            minHeight: '700px',
+            display: 'flex',
+            background: Colors.background,
           }}>
-            {display}
+            <SideBar history={this.props.history} />
+            <div style={{
+              width: '75%',
+              height: '100%',
+              marginTop: '2rem',
+              marginRight: 'auto',
+              marginLeft: 'auto',
+              display: 'block',
+              color: Colors.greyText,
+            }}>
+              {display}
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      this.props.history.push('./');
+    }
   }
 }
 

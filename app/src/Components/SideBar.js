@@ -29,12 +29,12 @@ class SideBar extends Component {
             background: Colors.sideBar,
           }}>Home</ListGroup.Item>
           <ListGroup.Item action onClick={() => {
-            this.props.history.push('/home');
+            this.props.history.push('/favorites');
           }} style={{
             background: Colors.sideBar,
           }}>Meus Filmes</ListGroup.Item>
           <ListGroup.Item action onClick={() => {
-            this.props.history.push('/home');
+            this.props.history.push('/search');
           }} style={{
             background: Colors.sideBar,
           }}>Buscar Filmes</ListGroup.Item>
