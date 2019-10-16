@@ -6,8 +6,8 @@ const mongo = require('mongodb');
 
 const {MongoClient} = mongo;
 const CONFIGS = {
-  // dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
-  dbUrl: 'mongodb://127.0.0.1:27017',
+  dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
+  // dbUrl: 'mongodb://127.0.0.1:27017',
   dbName: 'techweb',
 };
 
@@ -182,6 +182,49 @@ client.connect((err) => {
         } else {
           res.status(400).send({
             message: 'No user found',
+          });
+        }
+      });
+
+  app.route('/validate/:userId')
+      .post(async (req, res, next) => {
+        const userId = req.params.userId;
+        const otp = req.body.otp;
+        let user = null;
+        let error;
+        await db.collection('users').findOne({
+          _id: new mongo.ObjectID(userId),
+        }).then((v) => {
+          user = v;
+        }).catch((e) => {
+          error = e;
+        });
+
+        if (user) {
+          if (otp === user.otp) {
+            await db.collection('users').updateOne({
+              _id: new mongo.ObjectID(userId),
+            }, {
+              $set: {
+                valid: true,
+              },
+            }).then((v) => {
+              res.send({
+                message: 'User validated',
+              });
+            }).catch((e) => {
+              res.status(400).send({
+                message: e.message,
+              });
+            });
+          } else {
+            res.status(415).send({
+              message: 'Invalid OTP',
+            });
+          }
+        } else {
+          res.status(400).send({
+            message: error.message,
           });
         }
       });

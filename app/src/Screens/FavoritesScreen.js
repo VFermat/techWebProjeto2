@@ -1,45 +1,42 @@
 import React, {Component} from 'react';
-import {Figure, Spinner, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {FaPoop, FaFire} from 'react-icons/fa';
+import {Figure, Spinner} from 'react-bootstrap';
 import StarRatings from 'react-star-ratings';
 import axios from 'axios';
 import Header from '../Components/Header';
 import SideBar from '../Components/SideBar';
 import {Colors} from '../Config/Colors';
 
-class HomeScreen extends Component {
+export class FavoritesScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
       movies: null,
+      loading: true,
     };
     this.user = JSON.parse(localStorage.getItem('user'));
     this.componentDidMount = this.componentDidMount.bind(this);
   }
 
   async componentDidMount() {
-    const movies = null;
-    if (!movies) {
-      await axios.get('http://localhost:8081/movies?category=movies&type=wanted').then((v) => {
-        if (v) {
-          localStorage.setItem('movies', JSON.stringify(v.data));
+    const movies = [];
+    if (this.user.movies.length > 0) {
+      this.user.movies.forEach(async (item, index) => {
+        await axios.get('http://localhost:8081/movie/'+item).then((v) => {
+          movies.push(v.data);
+        }).catch((e) => {
+          console.log(e);
+        });
+        if (index === this.user.movies.length - 1) {
           this.setState({
             loading: false,
-            movies: v.data,
-          });
-        } else {
-          this.setState({
-            loading: true,
+            movies: movies,
           });
         }
-      }).catch((e) => {
-        console.log(e);
       });
     } else {
       this.setState({
         loading: false,
-        movies: JSON.parse(movies),
+        movies: [],
       });
     }
   }
@@ -49,33 +46,8 @@ class HomeScreen extends Component {
     if (this.state.loading) {
       movies = <Spinner animation="border" role="status"/>;
     } else {
-      movies = this.state.movies.movies.map((item) => {
-        let fire;
-        if (item.liked.length > 4*item.unliked.length) {
-          fire = <OverlayTrigger
-            key='right'
-            placement='right'
-            overlay={
-              <Tooltip id={`tooltip-right`}>
-                      This Icon means that more than 80% of our users like this movie!
-              </Tooltip>
-            }>
-            <FaFire size={25} color={Colors.greyText}/>
-          </OverlayTrigger>;
-        } else if (item.unliked.length > item.liked.length) {
-          fire = <OverlayTrigger
-            key='right'
-            placement='right'
-            overlay={
-              <Tooltip id={`tooltip-right`}>
-              This Icon means that more than 50% of our users do not like this movie!
-              </Tooltip>
-            }>
-            <FaPoop size={25} color={Colors.greyText}/>
-          </OverlayTrigger>;
-        } else {
-          fire = <></>;
-        }
+      movies = this.state.movies.map((item) => {
+        console.log(item);
         return (
           <Figure style={{
             width: '15%',
@@ -88,17 +60,9 @@ class HomeScreen extends Component {
               src={item.image}
               alt={item.title}
             />
-            <Figure.Caption style={{textAlign: 'center'}}>
+            <Figure.Caption>
               {item.title}
             </Figure.Caption>
-            <div style={{
-              marginTop: '0.3rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-              {fire}
-            </div>
             <StarRatings
               rating={(item.rating)/2}
               numberOfStars={5}
@@ -110,6 +74,7 @@ class HomeScreen extends Component {
         );
       });
     }
+
     if (this.user) {
       return (
         <div>
@@ -135,7 +100,7 @@ class HomeScreen extends Component {
                 width: '100%',
                 padding: '10px 0px 0px 0px',
                 textAlign: 'center',
-              }}><h2>Most Wanted:</h2></div>
+              }}><h2>My Favorites Movies:</h2></div>
               <div style={{
                 width: '50%',
                 margin: '10px auto 10px auto',
@@ -164,4 +129,4 @@ class HomeScreen extends Component {
   }
 }
 
-export default HomeScreen;
+export default FavoritesScreen;
