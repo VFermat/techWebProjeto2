@@ -38,6 +38,27 @@ export class MovieScreen extends Component {
     }
   }
 
+  async componentDidMount() {
+    if (!this.state.movie) {
+      await axios.get('http://localhost:8081/movie/' + this.state.movieId).then((v) => {
+        if (v) {
+          this.setState({
+            loading: false,
+            movie: v.data,
+          });
+        } else {
+          this.setState({
+            loading: true,
+          });
+        };
+      }).catch((e) => {
+        this.setState({
+          loading: true,
+        });
+      });
+    }
+  }
+
   render() {
     if (this.user) {
       let display;
