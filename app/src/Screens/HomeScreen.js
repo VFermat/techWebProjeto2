@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Figure, Spinner} from 'react-bootstrap';
+import {Figure, Spinner, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {FaPoop, FaFire} from 'react-icons/fa';
 import StarRatings from 'react-star-ratings';
 import axios from 'axios';
 import Header from '../Components/Header';
@@ -49,6 +50,32 @@ class HomeScreen extends Component {
       movies = <Spinner animation="border" role="status"/>;
     } else {
       movies = this.state.movies.movies.map((item) => {
+        let fire;
+        if (item.liked.length > 4*item.unliked.length) {
+          fire = <OverlayTrigger
+            key='right'
+            placement='right'
+            overlay={
+              <Tooltip id={`tooltip-right`}>
+                      This Icon means that more than 80% of our users like this movie!
+              </Tooltip>
+            }>
+            <FaFire size={25} color={Colors.greyText}/>
+          </OverlayTrigger>;
+        } else if (item.unliked.length > item.liked.length) {
+          fire = <OverlayTrigger
+            key='right'
+            placement='right'
+            overlay={
+              <Tooltip id={`tooltip-right`}>
+              This Icon means that more than 50% of our users do not like this movie!
+              </Tooltip>
+            }>
+            <FaPoop size={25} color={Colors.greyText}/>
+          </OverlayTrigger>;
+        } else {
+          fire = <></>;
+        }
         return (
           <Figure style={{
             width: '15%',
@@ -61,9 +88,17 @@ class HomeScreen extends Component {
               src={item.image}
               alt={item.title}
             />
-            <Figure.Caption>
+            <Figure.Caption style={{textAlign: 'center'}}>
               {item.title}
             </Figure.Caption>
+            <div style={{
+              marginTop: '0.3rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              {fire}
+            </div>
             <StarRatings
               rating={(item.rating)/2}
               numberOfStars={5}

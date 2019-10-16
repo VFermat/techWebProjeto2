@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {IoIosPerson, IoIosMail} from 'react-icons/io';
+import {IoIosPerson, IoIosMail, IoIosFilm} from 'react-icons/io';
 import {ListGroup, Button, Modal} from 'react-bootstrap';
 import OTPInput from 'otp-input-react';
 import Header from '../Components/Header';
@@ -176,6 +176,28 @@ export class ProfileScreen extends Component {
                     }}>
                       <IoIosMail />
                       <div>{user.email}</div>
+                    </div>
+                  </ListGroup.Item>
+                  <ListGroup.Item style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '50%',
+                    height: 'auto',
+                    marginRight: 'auto',
+                    marginLeft: 'auto',
+                    minHeight: '54px',
+                    background: Colors.background,
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      height: 'auto',
+                    }}>
+                      <IoIosFilm />
+                      <div>{user.name}</div>
                     </div>
                   </ListGroup.Item>
                 </ListGroup>
