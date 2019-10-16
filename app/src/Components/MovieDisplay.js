@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Figure} from 'react-bootstrap';
 import {IoIosHeart, IoIosHeartEmpty, IoIosThumbsDown, IoIosThumbsUp} from 'react-icons/io';
-import StarRating from 'react-star-ratings';
 import axios from 'axios';
 import {Colors} from '../Config/Colors';
 

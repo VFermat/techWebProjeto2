@@ -19,7 +19,7 @@ class HomeScreen extends Component {
   }
 
   async componentDidMount() {
-    const movies = localStorage.getItem('movies');
+    const movies = null;
     if (!movies) {
       await axios.get('http://localhost:8081/movies?category=movies&type=wanted').then((v) => {
         if (v) {

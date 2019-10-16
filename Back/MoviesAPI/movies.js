@@ -6,8 +6,8 @@ const mongo = require('mongodb');
 
 const {MongoClient} = mongo;
 const CONFIGS = {
-  // dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
-  dbUrl: 'mongodb://127.0.0.1:27017',
+  dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
+  // dbUrl: 'mongodb://127.0.0.1:27017',
   dbName: 'movies',
   dbAuthName: 'TechWeb',
 };
@@ -173,10 +173,10 @@ client.connect((err) => {
       })
       .patch(async (req, res, next) => {
         const category = 'movie';
-        const movieId = req.params.movie.movieId;
+        const movieId = req.params.movieId;
 
         await db.collection(category).updateOne({imdbId: movieId}, {
-          $set: req.data,
+          $set: req.body,
         }).then((v) => {
           res.send(v);
         }).catch((e) => {
