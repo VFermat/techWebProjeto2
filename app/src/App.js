@@ -8,6 +8,7 @@ import LoginScreen from './Screens/LoginScreen';
 import MovieScreen from './Screens/MovieScreen';
 import ProfileScreen from './Screens/ProfileScreen';
 import SearchScreen from './Screens/SearchScreen';
+import SearchMovieScreen from './Screens/SearchMovieScreen';
 import './App.css';
 
 const history = createBrowserHistory();
@@ -34,7 +35,11 @@ function App() {
         <Route path='/favorites' component={FavoritesScreen} history={history} />
       </Switch>
       <Switch>
-        <Route path='/search' component={SearchScreen} history={history} />
+        <Route exact path='/search' component={SearchScreen} history={history} />
+      </Switch>
+
+      <Switch>
+        <Route exact path='/search/:movieId' component={SearchMovieScreen} history={history} />
       </Switch>
     </Router>
   );
