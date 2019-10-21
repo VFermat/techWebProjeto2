@@ -5,12 +5,14 @@ const axios = require('axios');
 const mongo = require('mongodb');
 
 const {MongoClient} = mongo;
+
 const CONFIGS = {
   dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
   // dbUrl: 'mongodb://127.0.0.1:27017',
   dbName: 'movies',
   dbAuthName: 'TechWeb',
 };
+
 const uflixit = {
   baseUrl: 'https://uflixit.p.rapidapi.com',
   headers: {
@@ -18,6 +20,10 @@ const uflixit = {
     'x-rapidapi-host': 'uflixit.p.rapidapi.com',
     'x-rapidapi-key': 'da0b039cadmsh777ad4452c07f9cp1b140ajsn2155a240275d',
   },
+};
+
+const theMovieDB = {
+  searchByTitleURL: 'https://api.themoviedb.org/3/search/movie?api_key=e065aad1be38f0202d339b9fe5533ef9&query=',
 };
 
 app.use(parser.json());
@@ -73,9 +79,9 @@ client.connect((err) => {
           'method': 'GET',
           'url': util.format('%s/%s/%s', uflixit.baseUrl, category, type),
           'headers': uflixit.headers,
-        }).then((v)=>{
+        }).then((v) => {
           movies = v.data.result;
-        }).catch((e)=>{
+        }).catch((e) => {
           movies = null;
         });
         if (movies) {
@@ -185,6 +191,30 @@ client.connect((err) => {
           });
         });
       });
+
+  // GET movie by title
+  app.route('/search').get(async (req, res, next) => {
+    console.log('GET em /search:');
+
+    const title = req.query.t;
+
+    console.log('Movie title: ' + title);
+    console.log('Fazendo request no TheMovieDB...');
+
+    await axios.get(theMovieDB.searchByTitleURL + title)
+        .then((v) => {
+          console.log('Resposta:');
+
+          console.log(v.data);
+
+          res.send(v.data);
+        })
+        .catch((e) => {
+          res.status(400).send({
+            message: e.message,
+          });
+        });
+  });
 });
 
 app.listen(8081);
