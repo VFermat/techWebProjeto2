@@ -142,7 +142,7 @@ export class SearchScreen extends Component {
 
         return (
           <div>
-            <Header />
+            <Header history={this.props.history}/>
             <div style={{
               width: '100%',
               heigth: 'auto',
@@ -219,31 +219,9 @@ export class SearchScreen extends Component {
           </div>
         );
       } else {
-        const results = this.state.searchResults.results.map((movie) =>
-          <React.Fragment>
-            <Figure style={{
-              width: '15%',
-              margin: '10px 10px 0px 10px',
-            }}>
-              <Figure.Image
-                onClick={() => {
-                  this.props.history.push('/search/' + movie.id);
-                }}
-                src={'https://image.tmdb.org/t/p/w500' + movie.poster_path}
-                alt={movie.title}
-              />
-              <Figure.Caption
-                style={{textAlign: 'center'}}>
-                {movie.title}
-              </Figure.Caption>
-            </Figure>
-          </React.Fragment>
-        );
-
         return (
           <div>
-            <Header />
-
+            <Header history={this.props.history}/>
             <div style={{
               width: '100%',
               heigth: 'auto',
@@ -252,7 +230,6 @@ export class SearchScreen extends Component {
               background: Colors.background,
             }}>
               <SideBar history={this.props.history} />
-
               <div style={{
                 width: 'auto',
                 maxWidth: '75%',
@@ -265,35 +242,6 @@ export class SearchScreen extends Component {
                 textAlign: 'center',
               }}>
                 <h3 style={{margin: 'none'}}>Feature can only be used by users who validated their phone number. Please validate your phone number on your profile!</h3>
-
-                <form onSubmit={this.handleSubmit}>
-                  <label>
-                    Search:
-                    <input type="text" value={this.state.movieTitle} onChange={this.handleChange} name="movieTitle" placeholder="Movie Title" />
-                  </label>
-
-                  {this.state.searchLoading ?
-                    <Button type="submit" value="Submit" >
-                      <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                    </Button> :
-                    <Button type="submit" value="Submit" >
-                      Submit
-                    </Button>}
-                </form>
-
-                <div style={{
-                  width: '80%',
-                  marginTop: '2rem',
-                  marginRight: 'auto',
-                  marginLeft: 'auto',
-                  display: 'flex',
-                  alignItems: 'start',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  flexWrap: 'wrap',
-                }}>
-                  {results}
-                </div>
               </div>
             </div>
           </div>

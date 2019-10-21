@@ -197,7 +197,7 @@ export class ProfileScreen extends Component {
                       height: 'auto',
                     }}>
                       <IoIosFilm />
-                      <div>{user.name}</div>
+                      <div>{user.movies.length + ' Movies Liked'}</div>
                     </div>
                   </ListGroup.Item>
                 </ListGroup>
