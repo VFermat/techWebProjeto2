@@ -24,6 +24,8 @@ const uflixit = {
 
 const theMovieDB = {
   searchByTitleURL: 'https://api.themoviedb.org/3/search/movie?api_key=e065aad1be38f0202d339b9fe5533ef9&query=',
+  searchByID: 'https://api.themoviedb.org/3/movie/',
+  apiKey: 'e065aad1be38f0202d339b9fe5533ef9',
 };
 
 app.use(parser.json());
@@ -210,6 +212,29 @@ client.connect((err) => {
           res.send(v.data);
         })
         .catch((e) => {
+          res.status(400).send({
+            message: e.message,
+          });
+        });
+  });
+
+  // GET movie details by id
+  app.route('/search/:movieId').get(async (req, res, next) => {
+    console.log('GET em /search/:movieId');
+
+    const movieId = req.params.movieId;
+    console.log('Movie ID: ' + movieId);
+    console.log(theMovieDB.searchByID + movieId + '?' + theMovieDB.apiKey);
+
+    await axios.get(theMovieDB.searchByID + movieId + '?api_key=' + theMovieDB.apiKey)
+        .then((v) =>{
+          console.log('Resposta:');
+
+          console.log(v.data);
+
+          res.send(v.data);
+        })
+        .catch((e) =>{
           res.status(400).send({
             message: e.message,
           });

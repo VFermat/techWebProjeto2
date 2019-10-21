@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Spinner, Button} from 'react-bootstrap';
+import {Spinner, Button, Figure} from 'react-bootstrap';
 import axios from 'axios';
 import Header from '../Components/Header';
 import SideBar from '../Components/SideBar';
@@ -22,6 +22,7 @@ export class SearchScreen extends Component {
     // Connecting the methods
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.goToMovieScreen = this.goToMovieScreen.bind(this);
   }
 
   handleChange(event) {
@@ -40,10 +41,12 @@ export class SearchScreen extends Component {
     });
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     this.setState({
       searchLoading: true,
     });
+
+    // await new Promise((resolve) => {setTimeout(resolve, 3000)})
 
     const movieTitle = this.state.movieTitle;
 
@@ -79,6 +82,10 @@ export class SearchScreen extends Component {
     event.preventDefault();
   }
 
+  goToMovieScreen(movieId) {
+    this.props.history.push('/search/' + movieId);
+  }
+
   render() {
     if (this.user) {
       if (this.user.valid) {
@@ -110,25 +117,25 @@ export class SearchScreen extends Component {
         );
       } else {
         const results = this.state.searchResults.results.map((movie) =>
-          <div>
-            <li>{movie.title}</li>
-            <li>{movie.release_date}</li>
-            <li>{movie.overview}</li>
-          </div>
+          <React.Fragment>
+            <Figure style={{
+              width: '15%',
+              margin: '10px 10px 0px 10px',
+            }}>
+              <Figure.Image
+                onClick={() => {
+                  this.props.history.push('/search/' + movie.id);
+                }}
+                src={'https://image.tmdb.org/t/p/w500' + movie.poster_path}
+                alt={movie.title}
+              />
+              <Figure.Caption
+                style={{textAlign: 'center'}}>
+                {movie.title}
+              </Figure.Caption>
+            </Figure>
+          </React.Fragment>
         );
-
-        const submitButton =
-            <Button type="submit" value="Submit" >
-              Submit
-            </Button>;
-
-        if (this.state.searchLoading === true) {
-          const submitButton =
-            <Button type="submit" value="Submit" >
-              Submit
-              <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-            </Button>;
-        }
 
         return (
           <div>
@@ -145,7 +152,7 @@ export class SearchScreen extends Component {
 
               <div style={{
                 width: 'auto',
-                maxWidth: '50%',
+                maxWidth: '75%',
                 minHeight: '300px',
                 heigth: '100%',
                 margin: '6rem auto 0px auto',
@@ -162,10 +169,30 @@ export class SearchScreen extends Component {
                     <input type="text" value={this.state.movieTitle} onChange={this.handleChange} name="movieTitle" placeholder="Movie Title" />
                   </label>
 
-                  {submitButton}
+                  {this.state.searchLoading ?
+                    <Button type="submit" value="Submit" >
+                      <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                    </Button> :
+                    <Button type="submit" value="Submit" >
+                      Submit
+                    </Button>}
                 </form>
 
-                <ul>{results}</ul>
+                {/* <ul>{results}</ul> */}
+
+                <div style={{
+                  width: '80%',
+                  marginTop: '2rem',
+                  marginRight: 'auto',
+                  marginLeft: 'auto',
+                  display: 'flex',
+                  alignItems: 'start',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                }}>
+                  {results}
+                </div>
               </div>
             </div>
           </div>
