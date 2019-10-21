@@ -55,7 +55,7 @@ export class SearchScreen extends Component {
               display: 'flex',
               background: Colors.background,
             }}>
-              <SideBar />
+              <SideBar history={this.props.history} />
             </div>
           </div>
         );
