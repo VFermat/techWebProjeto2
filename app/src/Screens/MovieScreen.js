@@ -44,7 +44,7 @@ export class MovieScreen extends Component {
       if (this.state.loading) {
         display = <Spinner animation="border" role="status"/>;
       } else {
-        display = <MovieDisplay movie={this.state.movie} />;
+        display = <MovieDisplay movie={this.state.movie} history={this.props.history}/>;
       }
       return (
         <div>

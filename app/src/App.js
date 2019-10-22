@@ -1,7 +1,8 @@
 import React from 'react';
-import { Switch, Route, Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import {Switch, Route, Router} from 'react-router-dom';
+import {createBrowserHistory} from 'history';
 import CreateAccountScreen from './Screens/CreateAccountScreen';
+import DiscussionScreen from './Screens/DiscussionScreen';
 import FavoritesScreen from './Screens/FavoritesScreen';
 import HomeScreen from './Screens/HomeScreen';
 import LoginScreen from './Screens/LoginScreen';
@@ -37,9 +38,11 @@ function App() {
       <Switch>
         <Route exact path='/search' component={SearchScreen} history={history} />
       </Switch>
-
       <Switch>
         <Route exact path='/search/:movieId' component={SearchMovieScreen} history={history} />
+      </Switch>
+      <Switch>
+        <Route exact path='/discussion/:movieId' component={DiscussionScreen} history={history} />
       </Switch>
     </Router>
   );

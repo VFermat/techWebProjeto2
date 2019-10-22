@@ -27,6 +27,7 @@ export class MovieDisplay extends Component {
     this.handleMovieUnfavorited = this.handleMovieUnfavorited.bind(this);
     this.handleMovieLiked = this.handleMovieLiked.bind(this);
     this.handleMovieUnliked = this.handleMovieUnliked.bind(this);
+    this.handleDiscussionButton = this.handleDiscussionButton.bind(this);
   }
 
   handleMovieFavorited() {
@@ -73,6 +74,10 @@ export class MovieDisplay extends Component {
       this.props.movie.liked = users;
       this.props.movie.unliked.push(this.state.user.id);
     }
+  }
+
+  handleDiscussionButton() {
+    this.props.history.push('/discussion/'+this.props.movie.imdbId, {movie: this.props.movie});
   }
 
   componentDidMount() {
@@ -201,7 +206,7 @@ export class MovieDisplay extends Component {
                 maxWidth: '75%',
                 margin: '0px auto 0px auto',
                 textAlign: 'center',
-              }}>Have you watched this one?</p>
+              }}>Want to discuss this movie?</p>
               <div style={{
                 maxWidth: '75%',
                 display: 'flex',
@@ -214,7 +219,7 @@ export class MovieDisplay extends Component {
                   textAlign: 'center',
                   background: Colors.header,
                   borderColor: Colors.header,
-                }}>Yeah!</Button>
+                }} onClick={this.handleDiscussionButton}>Sure!</Button>
               </div>
             </div>
           </div>
