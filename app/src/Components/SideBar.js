@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ListGroup} from 'react-bootstrap';
+import {ListGroup, ToggleButton} from 'react-bootstrap';
 import {Colors} from '../Config/Colors';
 
 class SideBar extends Component {

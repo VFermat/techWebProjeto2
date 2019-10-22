@@ -5,12 +5,14 @@ const axios = require('axios');
 const mongo = require('mongodb');
 
 const {MongoClient} = mongo;
+
 const CONFIGS = {
-  dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
-  // dbUrl: 'mongodb://127.0.0.1:27017',
+  // dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
+  dbUrl: 'mongodb://127.0.0.1:27017',
   dbName: 'movies',
   dbAuthName: 'TechWeb',
 };
+
 const uflixit = {
   baseUrl: 'https://uflixit.p.rapidapi.com',
   headers: {
@@ -20,10 +22,16 @@ const uflixit = {
   },
 };
 
+const theMovieDB = {
+  searchByTitleURL: 'https://api.themoviedb.org/3/search/movie?api_key=e065aad1be38f0202d339b9fe5533ef9&query=',
+  searchByID: 'https://api.themoviedb.org/3/movie/',
+  apiKey: 'e065aad1be38f0202d339b9fe5533ef9',
+};
+
 app.use(parser.json());
 app.use(function(req, res, next) {
   // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3030/');
   // Request methods you wish to allow
   res.setHeader('Access-Control-Allow-Methods',
       'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -73,9 +81,9 @@ client.connect((err) => {
           'method': 'GET',
           'url': util.format('%s/%s/%s', uflixit.baseUrl, category, type),
           'headers': uflixit.headers,
-        }).then((v)=>{
+        }).then((v) => {
           movies = v.data.result;
-        }).catch((e)=>{
+        }).catch((e) => {
           movies = null;
         });
         if (movies) {
@@ -185,6 +193,81 @@ client.connect((err) => {
           });
         });
       });
+
+  // GET movie by title
+  app.route('/search').get(async (req, res, next) => {
+    console.log('GET em /search:');
+
+    const title = req.query.title;
+
+    console.log('Movie title: ' + title);
+    console.log('Fazendo request no TheMovieDB...');
+
+    await axios.get(theMovieDB.searchByTitleURL + title)
+        .then((v) => {
+          console.log('Resposta:');
+
+          console.log(v.data);
+
+          res.send(v.data);
+        })
+        .catch((e) => {
+          res.status(400).send({
+            message: e.message,
+          });
+        });
+  });
+
+  // GET movie details by id
+  app.route('/search/:movieId').get(async (req, res, next) => {
+    console.log('GET em /search/:movieId');
+
+    const movieId = req.params.movieId;
+    console.log('Movie ID: ' + movieId);
+    console.log(theMovieDB.searchByID + movieId + '?' + theMovieDB.apiKey);
+
+    await axios.get(theMovieDB.searchByID + movieId + '?api_key=' + theMovieDB.apiKey)
+        .then((v) => {
+          console.log('Resposta:');
+
+          console.log(v.data);
+
+          res.send(v.data);
+        })
+        .catch((e) => {
+          res.status(400).send({
+            message: e.message,
+          });
+        });
+  });
+
+  app.route('/comments/:movieId').get(async (req, res, next) => {
+    const movieId = req.params.movieId;
+    await db.collection('comments').find({
+      movie: movieId,
+    }).sort({date: -1}).toArray().then((v) => {
+      res.send({
+        comments: v,
+      });
+    }).catch((e) => {
+      res.status(400).send({
+        message: e.message,
+      });
+    });
+  }).post(async (req, res, next) => {
+    await db.collection('comments').insertOne(req.body).then((v) => {
+      const comment = v;
+      comment.id = comment._id;
+      delete comment._id;
+      res.send({
+        comment: comment,
+      });
+    }).catch((e) => {
+      res.status(400).send({
+        message: e.message,
+      });
+    });
+  });
 });
 
 app.listen(8081);

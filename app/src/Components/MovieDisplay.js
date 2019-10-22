@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Figure} from 'react-bootstrap';
+import {Figure, Button} from 'react-bootstrap';
 import {IoIosHeart, IoIosHeartEmpty, IoIosThumbsDown, IoIosThumbsUp} from 'react-icons/io';
 import axios from 'axios';
 import {Colors} from '../Config/Colors';
@@ -27,6 +27,7 @@ export class MovieDisplay extends Component {
     this.handleMovieUnfavorited = this.handleMovieUnfavorited.bind(this);
     this.handleMovieLiked = this.handleMovieLiked.bind(this);
     this.handleMovieUnliked = this.handleMovieUnliked.bind(this);
+    this.handleDiscussionButton = this.handleDiscussionButton.bind(this);
   }
 
   handleMovieFavorited() {
@@ -73,6 +74,10 @@ export class MovieDisplay extends Component {
       this.props.movie.liked = users;
       this.props.movie.unliked.push(this.state.user.id);
     }
+  }
+
+  handleDiscussionButton() {
+    this.props.history.push('/discussion/'+this.props.movie.imdbId, {movie: this.props.movie});
   }
 
   componentDidMount() {
@@ -188,6 +193,35 @@ export class MovieDisplay extends Component {
                 src={this.props.movie.image}
                 alt={this.props.movie.title}/>
             </Figure>
+            <div style={{
+              display: 'block',
+              width: '80%',
+              margin: '2rem auto 0px auto',
+              padding: '0.2rem',
+              background: Colors.extra,
+              borderRadius: '0.25rem',
+              color: Colors.greyText,
+            }}>
+              <p style={{
+                maxWidth: '75%',
+                margin: '0px auto 0px auto',
+                textAlign: 'center',
+              }}>Want to discuss this movie?</p>
+              <div style={{
+                maxWidth: '75%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '1rem auto 0px auto',
+                paddingBottom: '0.2rem',
+              }}>
+                <Button style={{
+                  textAlign: 'center',
+                  background: Colors.header,
+                  borderColor: Colors.header,
+                }} onClick={this.handleDiscussionButton}>Sure!</Button>
+              </div>
+            </div>
           </div>
           <div style={{
             width: '65%',
