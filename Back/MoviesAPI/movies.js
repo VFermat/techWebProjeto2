@@ -73,7 +73,6 @@ client.connect((err) => {
 
   app.route('/movies')
       .post(async (req, res, next) => {
-        console.log('oi');
         const category = 'movies';
         const type = req.body.type;
 
