@@ -34,11 +34,6 @@ class SideBar extends Component {
             background: Colors.sideBar,
           }}>My Favorites</ListGroup.Item>
           <ListGroup.Item action onClick={() => {
-            this.props.history.push('/search');
-          }} style={{
-            background: Colors.sideBar,
-          }}>Search</ListGroup.Item>
-          <ListGroup.Item action onClick={() => {
             this.props.history.push('/profile');
           }} style={{
             background: Colors.sideBar,

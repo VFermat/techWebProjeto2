@@ -35,12 +35,12 @@ function App() {
       <Switch>
         <Route path='/favorites' component={FavoritesScreen} history={history} />
       </Switch>
-      <Switch>
+      {/* <Switch>
         <Route exact path='/search' component={SearchScreen} history={history} />
       </Switch>
       <Switch>
         <Route exact path='/search/:movieId' component={SearchMovieScreen} history={history} />
-      </Switch>
+      </Switch> */}
       <Switch>
         <Route exact path='/discussion/:movieId' component={DiscussionScreen} history={history} />
       </Switch>
