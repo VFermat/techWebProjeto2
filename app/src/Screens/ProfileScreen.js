@@ -21,6 +21,7 @@ export class ProfileScreen extends Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.handleOtpChange = this.handleOtpChange.bind(this);
     this.handleValidationButton = this.handleValidationButton.bind(this);
+    this.sendNewToken = this.sendNewToken.bind(this);
   }
 
   handleModalOpen() {
@@ -78,6 +79,11 @@ export class ProfileScreen extends Component {
         valButAble: true,
       });
     });
+  }
+
+  async sendNewToken() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    await axios.post('http://localhost:8080/sendOtp/' + user.id).then((v) => {}).catch((e) => {});
   }
 
   render() {
@@ -287,8 +293,8 @@ export class ProfileScreen extends Component {
               <Button variant="secondary" onClick={this.handleModalClose}>
                 Close
               </Button>
-              <Button variant="primary" onClick={this.handleModalClose}>
-                Save Changes
+              <Button variant="primary" onClick={this.sendNewToken}>
+                Send new Token.
               </Button>
             </Modal.Footer>
           </Modal>

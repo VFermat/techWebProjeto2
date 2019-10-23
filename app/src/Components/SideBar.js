@@ -32,7 +32,7 @@ class SideBar extends Component {
             this.props.history.push('/favorites');
           }} style={{
             background: Colors.sideBar,
-          }}>My Favotires</ListGroup.Item>
+          }}>My Favorites</ListGroup.Item>
           <ListGroup.Item action onClick={() => {
             this.props.history.push('/search');
           }} style={{

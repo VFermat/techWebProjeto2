@@ -180,8 +180,8 @@ client.connect((err) => {
 
         await db.collection('users').findOne({
           _id: new mongo.ObjectID(userId),
-        }).then((v) => {
-          axios({
+        }).then(async (v) => {
+          await axios({
             'method': 'POST',
             'url': telesign.baseUrl + '/sms-verification-code',
             'headers': telesign.headers,
@@ -190,7 +190,7 @@ client.connect((err) => {
               'verifyCode': v.otp,
               'appName': 'MovieMe',
             },
-          });
+          }).then((v) => {}).catch((e) => console.log(e.response));
           res.send({
             message: 'success',
           });
