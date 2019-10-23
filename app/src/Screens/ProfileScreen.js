@@ -64,6 +64,8 @@ export class ProfileScreen extends Component {
       this.setState({
         showModal: false,
       });
+      user.valid = true;
+      localStorage.setItem('user', JSON.stringify(user));
       alert('User validate! Enjoy MovieMe!');
     }).catch((e) => {
       console.log(e);

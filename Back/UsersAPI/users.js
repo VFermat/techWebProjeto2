@@ -6,9 +6,18 @@ const mongo = require('mongodb');
 
 const {MongoClient} = mongo;
 const CONFIGS = {
-  dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
-  // dbUrl: 'mongodb://127.0.0.1:27017',
+  // dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
+  dbUrl: 'mongodb://127.0.0.1:27017',
   dbName: 'techweb',
+};
+
+const telesign = {
+  baseUrl: 'https://telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com',
+  headers: {
+    'x-rapidapi-host': 'telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com',
+    'x-rapidapi-key': 'da0b039cadmsh777ad4452c07f9cp1b140ajsn2155a240275d',
+    'content-type': 'application/x-www-form-urlencoded',
+  },
 };
 
 app.use(parser.json());
@@ -66,15 +75,23 @@ client.connect((err) => {
         const user = {
           name: data.name,
           email: data.email,
-          salt,
+          phone: data.phone,
+          salt: salt,
           password: hash,
           valid: false,
           movies: [],
         };
 
+        const min = Math.ceil(1000);
+        const max = Math.ceil(9999);
+        const otp = Math.floor(Math.random() * (max - min)) + min;
+
+        user.otp = otp;
+
         await db.collection('users').insertOne(user)
             .then((v) => {
               user.id = v.insertedId;
+              delete user.otp;
               res.send(user);
             })
             .catch((err) => {
@@ -82,6 +99,24 @@ client.connect((err) => {
                 message: err.message,
               });
             });
+
+        await axios({
+          'method': 'POST',
+          'url': 'https://telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com/sms-verification-code',
+          'headers': telesign.headers,
+          'params': {
+            'phoneNumber': user.phone,
+            'verifyCode': otp,
+            'appName': 'MovieMe',
+          },
+          'data': {
+
+          },
+        }).then((v) => {
+          console.log(v);
+        }).catch((e) => {
+          console.log(e.response);
+        });
       });
 
   app.route('/user/:userId')
@@ -139,6 +174,33 @@ client.connect((err) => {
         }
       });
 
+  app.route('/sendOtp/:userId')
+      .post(async (req, res, next) => {
+        const userId = req.params.userId;
+
+        await db.collection('users').findOne({
+          _id: new mongo.ObjectID(userId),
+        }).then((v) => {
+          axios({
+            'method': 'POST',
+            'url': telesign.baseUrl + '/sms-verification-code',
+            'headers': telesign.headers,
+            'data': {
+              'phoneNumber': v.phone,
+              'verifyCode': v.otp,
+              'appName': 'MovieMe',
+            },
+          });
+          res.send({
+            message: 'success',
+          });
+        }).catch((e) => {
+          res.status(400).send({
+            message: e.message,
+          });
+        });
+      });
+
   // LOGIN route
   app.route('/login')
       .post(async (req, res, next) => {
@@ -186,6 +248,7 @@ client.connect((err) => {
         }
       });
 
+  // Route to validate user!
   app.route('/validate/:userId')
       .post(async (req, res, next) => {
         const userId = req.params.userId;
@@ -201,7 +264,7 @@ client.connect((err) => {
         });
 
         if (user) {
-          if (otp === user.otp) {
+          if (otp == user.otp) {
             await db.collection('users').updateOne({
               _id: new mongo.ObjectID(userId),
             }, {

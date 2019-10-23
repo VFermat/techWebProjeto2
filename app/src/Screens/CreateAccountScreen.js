@@ -11,6 +11,7 @@ class CreateAccountScreen extends Component {
       name: '',
       email: '',
       password: '',
+      phone: '',
       loading: false,
     };
 
@@ -24,7 +25,13 @@ class CreateAccountScreen extends Component {
     const name = target.name;
     const value = target.value;
 
-    if (name !== 'name') {
+    if (name === 'phone') {
+      if (value >= '0' && value <= '9' && value.length < 15) {
+        this.setState({
+          [name]: value,
+        });
+      }
+    } else if (name !== 'name') {
       this.setState({
         [name]: value,
       });
@@ -43,6 +50,7 @@ class CreateAccountScreen extends Component {
       email: this.state.email,
       password: this.state.password,
       name: this.state.name,
+      phone: this.state.phone,
     }).then((v) => {
       this.props.history.push('/');
     }).catch((e) => {
@@ -105,7 +113,7 @@ class CreateAccountScreen extends Component {
               fontWeight: '400',
               color: Colors.greyText,
             }}>
-              <h2>Crie sua Conta</h2>
+              <h2>Create Account</h2>
             </div>
             <div className="form-wrap" style={{
               display: 'flex',
@@ -121,11 +129,11 @@ class CreateAccountScreen extends Component {
                 <Form.Group controlId="fromGroupName" style={{
                   width: '100%',
                 }}>
-                  <Form.Label>Nome:</Form.Label>
+                  <Form.Label>Name:</Form.Label>
                   <Form.Control name="name"
                     type="text"
                     onChange={this.handleInputChange}
-                    placeholder="Seu Nome"
+                    placeholder="Your Name"
                     value={this.state.name}/>
                 </Form.Group>
                 <Form.Group controlId="formGroupEmail" style={{
@@ -135,8 +143,18 @@ class CreateAccountScreen extends Component {
                   <Form.Control name="email"
                     type="email"
                     onChange={this.handleInputChange}
-                    placeholder="Seu Email"
+                    placeholder="Your Email"
                     value={this.state.email}/>
+                </Form.Group>
+                <Form.Group controlId="formGroupPhone" style={{
+                  width: '100%',
+                }}>
+                  <Form.Label>Phone:</Form.Label>
+                  <Form.Control name="phone"
+                    type="text"
+                    onChange={this.handleInputChange}
+                    placeholder="Your Phone"
+                    value={this.state.phone}/>
                 </Form.Group>
                 <Form.Group controlId="formGroupPassword" style={{
                   width: '100%',
