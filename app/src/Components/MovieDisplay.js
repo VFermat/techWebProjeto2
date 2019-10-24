@@ -77,7 +77,7 @@ export class MovieDisplay extends Component {
   }
 
   handleDiscussionButton() {
-    this.props.history.push('/discussion/'+this.props.movie.imdbId, {movie: this.props.movie});
+    (this.state.user.valid) ? this.props.history.push('/discussion/'+this.props.movie.imdbId, {movie: this.props.movie}) : alert("Feature valid only for users who validated their phones. Please do so on profile screen.");
   }
 
   componentDidMount() {
