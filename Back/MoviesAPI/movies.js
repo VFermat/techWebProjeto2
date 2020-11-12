@@ -8,9 +8,8 @@ const {MongoClient} = mongo;
 
 const CONFIGS = {
   // dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
-  dbUrl: 'mongodb://127.0.0.1:27017',
-  dbName: 'movies',
-  dbAuthName: 'TechWeb',
+  dbUrl: 'mongodb://52.14.233.110:27017',
+  dbName: 'movies'
 };
 
 const uflixit = {
@@ -19,6 +18,15 @@ const uflixit = {
     'content-type': 'application/octet-stream',
     'x-rapidapi-host': 'uflixit.p.rapidapi.com',
     'x-rapidapi-key': 'da0b039cadmsh777ad4452c07f9cp1b140ajsn2155a240275d',
+  },
+};
+
+const telesign = {
+  baseUrl: 'https://telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com',
+  headers: {
+    'x-rapidapi-host': 'telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com',
+    'x-rapidapi-key': 'da0b039cadmsh777ad4452c07f9cp1b140ajsn2155a240275d',
+    'content-type': 'application/x-www-form-urlencoded',
   },
 };
 
@@ -269,6 +277,235 @@ client.connect((err) => {
       });
     });
   });
+
+  // USER Routes
+  app.route('/user')
+      .post(async (req, res, next) => {
+        const data = req.body;
+
+        const salt = crypto.randomBytes(16).toString('base64');
+        const hash = crypto.createHash('sha256')
+            .update(salt + data.password)
+            .digest('base64');
+        const user = {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          salt: salt,
+          password: hash,
+          valid: false,
+          movies: [],
+        };
+
+        const min = Math.ceil(1000);
+        const max = Math.ceil(9999);
+        const otp = Math.floor(Math.random() * (max - min)) + min;
+
+        user.otp = otp;
+
+        await db.collection('users').insertOne(user)
+            .then((v) => {
+              user.id = v.insertedId;
+              delete user.otp;
+              res.send(user);
+            })
+            .catch((err) => {
+              res.status(400).send({
+                message: err.message,
+              });
+            });
+
+        await axios({
+          'method': 'POST',
+          'url': 'https://telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com/sms-verification-code',
+          'headers': telesign.headers,
+          'params': {
+            'phoneNumber': user.phone,
+            'verifyCode': otp,
+            'appName': 'MovieMe',
+          },
+          'data': {
+
+          },
+        }).then((v) => {
+          console.log(v);
+        }).catch((e) => {
+          console.log(e.response);
+        });
+      });
+
+  app.route('/user/:userId')
+      .get(async (req, res, next) => {
+        const userId = req.params.userId;
+        const auth = req.headers.authorization;
+        const authenticated = await authenticateUser(auth, userId);
+
+        if (authenticated) {
+          let user;
+          await db.collection('users').findOne({
+            _id: new mongo.ObjectID(userId),
+          }).then((v) => {
+            user = v;
+          }).catch((e) => {
+            user = null;
+          });
+
+          if (user) {
+            user.id = user._id;
+            delete user._id;
+            res.send(user);
+          } else {
+            res.status(400).send({
+              message: 'User not found',
+            });
+          }
+        } else {
+          res.status(405).send({
+            message: 'Unauthorized access',
+          });
+        }
+      })
+      .patch(async (req, res, next) => {
+        const userId = req.params.userId;
+        const auth = req.headers.authorization;
+        const authenticated = await authenticateUser(auth, userId);
+
+        if (authenticated) {
+          await db.collection('users').updateOne({
+            _id: new mongo.ObjectID(userId),
+          }, {
+            $set: req.body,
+          }).then((v) => {
+            res.send(v);
+          }).catch((e) => {
+            res.status(400).send({
+              message: e.message,
+            });
+          });
+        } else {
+          res.status(405).send({
+            message: 'Unauthorized access',
+          });
+        }
+      });
+
+  app.route('/sendOtp/:userId')
+      .post(async (req, res, next) => {
+        const userId = req.params.userId;
+
+        await db.collection('users').findOne({
+          _id: new mongo.ObjectID(userId),
+        }).then(async (v) => {
+          await axios({
+            'method': 'POST',
+            'url': telesign.baseUrl + '/sms-verification-code',
+            'headers': telesign.headers,
+            'data': {
+              'phoneNumber': v.phone,
+              'verifyCode': v.otp,
+              'appName': 'MovieMe',
+            },
+          }).then((v) => {}).catch((e) => console.log(e.response));
+          res.send({
+            message: 'success',
+          });
+        }).catch((e) => {
+          res.status(400).send({
+            message: e.message,
+          });
+        });
+      });
+
+  // LOGIN route
+  app.route('/login')
+      .post(async (req, res, next) => {
+        const data = req.body;
+        let user;
+        await db.collection('users').findOne({email: data.email})
+            .then((v) => {
+              user = v;
+            })
+            .catch((e) => {
+              user = null;
+            });
+
+        if (user) {
+          const inputPassword = crypto.createHash('sha256')
+              .update(user.salt + data.password)
+              .digest('base64');
+          if (inputPassword === user.password) {
+            user.id = user._id;
+            delete user._id;
+            const auth = crypto.randomBytes(64).toString('base64');
+            const payload = {
+              token: auth,
+              userId: user.id,
+            };
+            await db.collection('tokens').insertOne(payload)
+                .then((v) => {
+                  user.token = auth;
+                  res.send(user);
+                })
+                .catch((e) => {
+                  res.status(400).send({
+                    message: e,
+                  });
+                });
+          } else {
+            res.status(405).send({
+              message: 'Unauthorized access',
+            });
+          }
+        } else {
+          res.status(400).send({
+            message: 'No user found',
+          });
+        }
+      });
+
+  // Route to validate user!
+  app.route('/validate/:userId')
+      .post(async (req, res, next) => {
+        const userId = req.params.userId;
+        const otp = req.body.otp;
+        let user = null;
+        let error;
+        await db.collection('users').findOne({
+          _id: new mongo.ObjectID(userId),
+        }).then((v) => {
+          user = v;
+        }).catch((e) => {
+          error = e;
+        });
+
+        if (user) {
+          if (otp == user.otp) {
+            await db.collection('users').updateOne({
+              _id: new mongo.ObjectID(userId),
+            }, {
+              $set: {
+                valid: true,
+              },
+            }).then((v) => {
+              res.send({
+                message: 'User validated',
+              });
+            }).catch((e) => {
+              res.status(400).send({
+                message: e.message,
+              });
+            });
+          } else {
+            res.status(415).send({
+              message: 'Invalid OTP',
+            });
+          }
+        } else {
+          res.status(400).send({
+            message: error.message,
+          });
+        }
+      });
 });
 
-app.listen(8081);
+app.listen(80);
