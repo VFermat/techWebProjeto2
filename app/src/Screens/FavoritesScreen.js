@@ -21,7 +21,7 @@ export class FavoritesScreen extends Component {
     const movies = [];
     if (this.user.movies.length > 0) {
       this.user.movies.forEach(async (item, index) => {
-        await axios.get('http://localhost:8081/movie/'+item).then((v) => {
+        await axios.get('http://52.14.233.110/movie/'+item).then((v) => {
           movies.push(v.data);
         }).catch((e) => {
           console.log(e);

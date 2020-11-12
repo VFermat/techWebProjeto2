@@ -19,7 +19,7 @@ export class MovieScreen extends Component {
 
   async componentDidMount() {
     if (!this.state.movie) {
-      await axios.get('http://localhost:8081/movie/' + this.state.movieId).then((v) => {
+      await axios.get('http://52.14.233.110/movie/' + this.state.movieId).then((v) => {
         if (v) {
           this.setState({
             loading: false,

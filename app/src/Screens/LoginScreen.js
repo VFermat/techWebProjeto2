@@ -34,7 +34,7 @@ class LoginScreen extends Component {
     this.setState({
       loading: true,
     });
-    axios.post('http://localhost:8080/login', {
+    axios.post('http://52.14.233.110/login', {
       email: this.state.email,
       password: this.state.password,
     }).then((v) => {

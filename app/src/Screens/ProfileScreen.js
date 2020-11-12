@@ -59,7 +59,7 @@ export class ProfileScreen extends Component {
     this.setState({
       valButAble: false,
     });
-    await axios.post('http://localhost:8080/validate/' + user.id, {
+    await axios.post('http://52.14.233.110/validate/' + user.id, {
       otp: this.state.otp,
     }).then((v) => {
       this.setState({
@@ -83,7 +83,7 @@ export class ProfileScreen extends Component {
 
   async sendNewToken() {
     const user = JSON.parse(localStorage.getItem('user'));
-    await axios.post('http://localhost:8080/sendOtp/' + user.id).then((v) => {}).catch((e) => {});
+    await axios.post('http://52.14.233.110/sendOtp/' + user.id).then((v) => {}).catch((e) => {});
   }
 
   render() {

@@ -16,7 +16,7 @@ export default class MovieDisplay extends React.Component {
   }
 
   async componentDidMount() {
-    await axios.get('http://localhost:8081/search/' + this.movieId)
+    await axios.get('http://52.14.233.110/search/' + this.movieId)
       .then((v) => {
         const data = v.data;
         console.log(data);

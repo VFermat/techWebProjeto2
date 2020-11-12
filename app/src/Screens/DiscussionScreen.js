@@ -65,7 +65,7 @@ export class DiscussionScreen extends Component {
 
 
   async addComment() {
-    await axios.post('http://localhost:8081/comments/1', {
+    await axios.post('http://52.14.233.110/comments/1', {
       user: this.state.user.id,
       movie: this.props.match.params.movieId,
       comment: this.state.comment,
@@ -82,7 +82,7 @@ export class DiscussionScreen extends Component {
   }
 
   async componentDidMount() {
-    await axios.get('http://localhost:8081/comments/' + this.props.match.params.movieId).then((v) => {
+    await axios.get('http://52.14.233.110/comments/' + this.props.match.params.movieId).then((v) => {
       this.setState({
         comments: v.data.comments,
         loadingComments: false,

@@ -50,7 +50,7 @@ export class SearchScreen extends Component {
 
     console.log('Buscando por: ' + movieTitle);
 
-    await axios.get('http://localhost:8081/search', {
+    await axios.get('http://52.14.233.110/search', {
       'params': {
         'title': movieTitle,
         'year': '',

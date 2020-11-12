@@ -21,7 +21,7 @@ class HomeScreen extends Component {
   async componentDidMount() {
     const movies = null;
     if (!movies) {
-      await axios.get('http://localhost:8081/movies?category=movies&type=wanted').then((v) => {
+      await axios.get('http://52.14.233.110/movies?category=movies&type=wanted').then((v) => {
         if (v) {
           localStorage.setItem('movies', JSON.stringify(v.data));
           this.setState({

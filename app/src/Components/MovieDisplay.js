@@ -94,14 +94,14 @@ export class MovieDisplay extends Component {
 
   componentWillUnmount() {
     localStorage.setItem('user', JSON.stringify(this.state.user));
-    axios.patch('http://localhost:8080/user/'+this.state.user.id, {
+    axios.patch('http://52.14.233.110/user/'+this.state.user.id, {
       movies: this.state.user.movies,
     }, {
       headers: {
         authorization: this.state.user.token,
       },
     });
-    axios.patch('http://localhost:8081/movie/'+this.props.movie.imdbId, this.props.movie);
+    axios.patch('http://52.14.233.110/movie/'+this.props.movie.imdbId, this.props.movie);
   }
 
   render() {

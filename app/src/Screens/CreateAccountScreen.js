@@ -46,7 +46,7 @@ class CreateAccountScreen extends Component {
     this.setState({
       loading: true,
     });
-    axios.post('http://localhost:8080/user', {
+    axios.post('http://52.14.233.110/user', {
       email: this.state.email,
       password: this.state.password,
       name: this.state.name,
