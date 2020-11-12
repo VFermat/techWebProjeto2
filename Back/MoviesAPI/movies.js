@@ -2,13 +2,14 @@ const app = require('express')();
 const parser = require('body-parser');
 const util = require('util');
 const axios = require('axios');
+const crypto = require('crypto');
 const mongo = require('mongodb');
 
 const {MongoClient} = mongo;
 
 const CONFIGS = {
   // dbUrl: 'mongodb+srv://Henrer:Rocher@techweb-r9i58.mongodb.net/admin?retryWrites=true&w=majority',
-  dbUrl: 'mongodb://52.14.233.110:27017',
+  dbUrl: 'mongodb://3.138.243.166:27017',
   dbName: 'movies'
 };
 
