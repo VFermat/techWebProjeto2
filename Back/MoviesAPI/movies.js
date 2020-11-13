@@ -52,7 +52,8 @@ app.use(function(req, res, next) {
 });
 
 const client = new MongoClient(CONFIGS.dbUrl,
-    {useNewUrlParser: true, useUnifiedTopology: true});
+    {useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 240000});
+
 
 client.connect((err) => {
   if (err) {
